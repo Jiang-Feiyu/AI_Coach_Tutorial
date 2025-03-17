@@ -116,4 +116,4 @@ def simulate_real_time_data(duration_seconds=None, interval=1):
 if __name__ == "__main__":
     print("开始模拟健康数据生成 (按 Ctrl+C 停止)...")
     # 模拟运行60秒，每秒生成一次数据
-    simulate_real_time_data(duration_seconds=60, interval=1)
+    simulate_real_time_data(duration_seconds=10, interval=1)
