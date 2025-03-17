@@ -95,6 +95,7 @@ def analyze_trends(data_history):
 def analyze_health_data(data, data_history):
     """Generate exercise analysis prompt with trend analysis"""
     trends = analyze_trends(data_history)
+    print("prompt =======================================================================================")
     
     prompt = f"""
     REAL-TIME EXERCISE DATA:
@@ -114,6 +115,8 @@ def analyze_health_data(data, data_history):
 
     Focus on critical changes and immediate action items. Be concise and direct.
     """
+    print(prompt)
+    print("prompt =======================================================================================")
     return prompt
 
 def main():
