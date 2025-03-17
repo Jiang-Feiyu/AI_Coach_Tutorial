@@ -78,4 +78,90 @@ Exercise Reference Ranges:
 """
 ```
 
+## Health Data Simulator
+-   Establishes baseline metrics for an individual (resting heart rate, blood pressure, etc.)
+-   Incrementally increases exercise duration and intensity
+-   Adjusts physiological responses based on exercise factor (with randomization for realism)
+-   Generates comprehensive data points at regular intervals
+-   Maintains a rolling history of the most recent data
+
+### Base Physiological Parameters
+
+| Parameter | Value | Unit | Description |
+|-----------|-------|------|-------------|
+| `base_heart_rate` | 75 | bpm | Resting heart rate |
+| `base_blood_pressure_systolic` | 120 | mmHg | Resting systolic blood pressure |
+| `base_blood_pressure_diastolic` | 80 | mmHg | Resting diastolic blood pressure |
+| `base_blood_oxygen` | 98 | % | Resting blood oxygen saturation |
+
+### Performance Parameters
+
+| Parameter | Value | Unit | Description |
+|-----------|-------|------|-------------|
+| `base_pace` | 6.0 | min/km | Base running/walking pace |
+| `base_stride` | 0.8 | m | Base stride length |
+| `base_cadence` | 160 | steps/min | Base step frequency |
+
+## Environmental Parameters
+
+| Parameter | Value | Unit | Description |
+|-----------|-------|------|-------------|
+| `base_altitude` | 50 | m | Base altitude |
+| `base_temperature` | 25 | °C | Base environmental temperature |
+| `base_pressure` | 1013 | hPa | Base atmospheric pressure |
+| `base_humidity` | 60 | % | Base humidity level |
+
+### Exercise Parameters
+
+| Parameter | Initial Value | Unit | Description |
+|-----------|---------------|------|-------------|
+| `exercise_duration` | 0 | min | Duration of exercise (increments during simulation) |
+| `total_distance` | 0 | km | Total distance covered (accumulates during simulation) |
+| `calories_burned` | 0 | kcal | Total calories burned (accumulates during simulation) |
+
+### Status Thresholds
+
+| Status | Condition |
+|--------|-----------|
+| `normal` | Default status |
+| `warning` | Heart rate > 160 bpm OR Blood oxygen < 95% |
+| `critical` | Heart rate > 180 bpm OR Blood oxygen < 90% |
+
+### Physiological Adjustments During Exercise
+| Parameter | Adjustment Formula | Max Change | 
+|-----------|-------------------|------------| 
+| Heart Rate | `base + (40 * exercise_factor) + random(-10, 10)` | +40 bpm | 
+| Systolic BP | `base + (20 * exercise_factor) + random(-10, 10)` | +20 mmHg | 
+| Diastolic BP | `base + (10 * exercise_factor) + random(-5, 5)` | +10 mmHg | 
+| Blood Oxygen | `base - exercise_factor + random(-1, 1)` | -1%
+
+### Data Structure
+
+```json
+{
+  "timestamp": "YYYY-MM-DD HH:MM:SS",
+  "heart_rate": 75,
+  "blood_pressure": {
+    "systolic": 120,
+    "diastolic": 80
+  },
+  "blood_oxygen": 98.0,
+  "performance": {
+    "pace": 6.0,
+    "stride": 0.8,
+    "cadence": 160,
+    "duration": 0.0,
+    "distance": 0.0,
+    "calories": 0.0
+  },
+  "environment": {
+    "altitude": 50,
+    "temperature": 25.0,
+    "pressure": 1013,
+    "humidity": 60
+  },
+  "status": "normal"
+}
+
+
 [SambaNova Cloud API]:https://cloud.sambanova.ai/apis
