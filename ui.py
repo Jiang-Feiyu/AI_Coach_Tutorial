@@ -10,6 +10,7 @@ from fetch_llm import get_llm_response, analyze_health_data
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+
 def initialize_session_state():
     """初始化Session State"""
     if 'history' not in st.session_state:
@@ -154,7 +155,7 @@ def main():
                 st.metric("Humidity", f"{data['environment']['humidity']}%")
         
         # 更新分析
-        prompt = analyze_health_data(data)
+        prompt = analyze_health_data(data, st.session_state.simulator.data_history)
         analysis = get_llm_response(prompt)
         
         # 使用空占位符更新分析结果

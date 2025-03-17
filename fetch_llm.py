@@ -29,16 +29,7 @@ Exercise Reference Ranges:
 """
 
 def get_llm_response(prompt, system_message=SYSTEM_MESSAGE):
-    """
-    Get LLM model response
-    
-    Args:
-        prompt (str): user input
-        system_message (str): system prompt
-    
-    Returns:
-        str: LLM output
-    """
+    """Get LLM model response"""
     load_dotenv()
     api_key = os.environ.get("SAMBANOVA_API_KEY")
     
@@ -59,50 +50,69 @@ def get_llm_response(prompt, system_message=SYSTEM_MESSAGE):
     
     return response.choices[0].message.content
 
-def analyze_health_data(data):
-    """Generate exercise analysis prompt"""
+def analyze_trends(data_history):
+    """分析数据趋势"""
+    if not data_history:
+        return {}
+        
+    trends = {
+        "heart_rate": [],
+        "blood_pressure_systolic": [],
+        "blood_pressure_diastolic": [],
+        "blood_oxygen": [],
+        "pace": [],
+        "distance": [],
+        "calories": []
+    }
     
-    # Calculate training zone percentage
-    max_hr = 220 - 30  # Assuming 30 years old
-    hr_percentage = round((data['heart_rate'] / max_hr) * 100)
+    # 收集数据
+    for data in data_history:
+        trends["heart_rate"].append(data["heart_rate"])
+        trends["blood_pressure_systolic"].append(data["blood_pressure"]["systolic"])
+        trends["blood_pressure_diastolic"].append(data["blood_pressure"]["diastolic"])
+        trends["blood_oxygen"].append(data["blood_oxygen"])
+        trends["pace"].append(data["performance"]["pace"])
+        trends["distance"].append(data["performance"]["distance"])
+        trends["calories"].append(data["performance"]["calories"])
+    
+    # 计算变化
+    def calculate_trend(values):
+        if len(values) < 2:
+            return "stable"
+        diff = values[-1] - values[0]
+        if abs(diff) < 0.05 * values[0]:  # 5%阈值
+            return "stable"
+        return "increasing" if diff > 0 else "decreasing"
+    
+    return {
+        "heart_rate_trend": calculate_trend(trends["heart_rate"]),
+        "blood_pressure_trend": calculate_trend(trends["blood_pressure_systolic"]),
+        "blood_oxygen_trend": calculate_trend(trends["blood_oxygen"]),
+        "pace_trend": calculate_trend(trends["pace"]),
+        "performance_trend": calculate_trend(trends["distance"])
+    }
+
+def analyze_health_data(data, data_history):
+    """Generate exercise analysis prompt with trend analysis"""
+    trends = analyze_trends(data_history)
     
     prompt = f"""
-    REAL-TIME EXERCISE MONITORING DATA:
+    REAL-TIME EXERCISE DATA:
+    Vitals: HR {data['heart_rate']}bpm, BP {data['blood_pressure']['systolic']}/{data['blood_pressure']['diastolic']}, SpO2 {data['blood_oxygen']}%
+    Performance: {data['performance']['pace']} min/km, {data['performance']['distance']} km
 
-    Timestamp: {data['timestamp']}
+    10-Record Trends:
+    ❤️ HR: {trends['heart_rate_trend']}
+    🩺 BP: {trends['blood_pressure_trend']}
+    🫁 SpO2: {trends['blood_oxygen_trend']}
+    ⚡ Pace: {trends['pace_trend']}
 
-    VITAL SIGNS:
-    ❤️ Heart Rate: {data['heart_rate']} bpm ({hr_percentage}% of max)
-    🩺 Blood Pressure: {data['blood_pressure']['systolic']}/{data['blood_pressure']['diastolic']} mmHg
-    🫁 SpO2: {data['blood_oxygen']}%
+    Provide a 50-100 word analysis covering:
+    1. Safety status & risks
+    2. Performance trends
+    3. Key recommendations
 
-    PERFORMANCE METRICS:
-    ⚡ Pace: {data['performance']['pace']} min/km
-    📏 Distance: {data['performance']['distance']} km
-    🔥 Calories: {data['performance']['calories']} kcal
-
-    ENVIRONMENTAL:
-    🌡️ Temperature: {data['environment']['temperature']}°C
-    💧 Humidity: {data['environment']['humidity']}%
-
-    Please provide a QUICK STATUS REPORT:
-
-    1. SAFETY STATUS:
-    - Current training zone
-    - Key vitals assessment
-    - Any immediate concerns
-
-    2. PERFORMANCE UPDATE:
-    - Exercise intensity evaluation
-    - Effort vs. capacity
-    - Progress indicators
-
-    3. ACTION ITEMS:
-    - Immediate adjustments needed
-    - Next steps recommendation
-    - Safety precautions if any
-
-    Format: Keep response under 100 words, prioritize safety alerts, use clear directives.
+    Focus on critical changes and immediate action items. Be concise and direct.
     """
     return prompt
 

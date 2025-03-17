@@ -12,7 +12,8 @@ def run_terminal_mode(simulator):
     try:
         while True:
             health_data = simulator.generate_health_data()
-            prompt = analyze_health_data(health_data)
+            # 修改这里，传入历史数据
+            prompt = analyze_health_data(health_data, simulator.data_history)
             response = get_llm_response(prompt)
             
             print("\nCurrent Health Data:")

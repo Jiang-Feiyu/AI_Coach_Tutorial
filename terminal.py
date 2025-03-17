@@ -29,6 +29,9 @@ class HealthDataSimulator:
         
         self.abnormal_probability = 0.1
 
+        self.data_history = []
+        self.max_history = 10  # 保存最近10条记录
+
     def generate_performance_data(self):
         """生成运动表现数据"""
         pace = round(self.base_pace + random.uniform(-1, 1), 2)
@@ -88,6 +91,11 @@ class HealthDataSimulator:
             data["status"] = "warning"
         if (heart_rate > 180 or blood_oxygen < 90):
             data["status"] = "critical"
+
+        # 添加数据到历史记录
+        self.data_history.append(data)
+        if len(self.data_history) > self.max_history:
+            self.data_history.pop(0)
             
         return data
 
