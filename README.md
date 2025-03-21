@@ -19,6 +19,8 @@
 
 ## Prompt
 This prompt is designed for real-time exercise monitoring and analysis by a large language model (LLM). It combines current exercise data with trend analysis to provide actionable insights for athletes and coaches.
+
+You can personalize the prompt in `.env`
 ```
     prompt = f"""
     REAL-TIME EXERCISE DATA:
