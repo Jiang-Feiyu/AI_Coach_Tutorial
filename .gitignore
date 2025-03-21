@@ -16,5 +16,5 @@ env/
 ENV/
 
 # Ignore all files in the data directory
-/data/
-/data/*
+data/
+data/*

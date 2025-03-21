@@ -81,6 +81,11 @@ def initialize_session_state():
         st.session_state.csv_path = "./data/data.csv"
     if 'save_data' not in st.session_state:
         st.session_state.save_data = True
+    # 添加语音反馈相关的状态
+    if 'auto_read_feedback' not in st.session_state:
+        st.session_state.auto_read_feedback = False
+    if 'last_read_feedback' not in st.session_state:
+        st.session_state.last_read_feedback = ""
 
 def update_history(data):
     """更新历史数据"""
@@ -167,6 +172,27 @@ def create_metrics_chart():
     fig.update_layout(height=800, showlegend=True)
     return fig
 
+# 添加语音播报功能
+def text_to_speech(text):
+    """
+    将文本转换为语音并在网页中播放
+    
+    参数:
+        text (str): 需要播放的文本
+    """
+    # 使用HTML的audio元素和Web Speech API
+    speech_js = f"""
+    <script>
+        function speak() {{
+            const utterance = new SpeechSynthesisUtterance(`{text}`);
+            speechSynthesis.speak(utterance);
+        }}
+        speak();
+    </script>
+    """
+    # 使用Streamlit组件来注入JavaScript
+    st.components.v1.html(speech_js, height=0)
+
 def main():
     st.set_page_config(page_title="Exercise Monitor", layout="wide")
     
@@ -178,6 +204,11 @@ def main():
     with st.sidebar:
         st.header("Settings")
         st.session_state.save_data = st.checkbox("Save data to CSV", value=True)
+        
+        # 添加语音反馈设置
+        st.subheader("Voice Feedback Settings")
+        st.session_state.auto_read_feedback = st.checkbox("Auto-read AI Coach Feedback", 
+                                                         value=st.session_state.auto_read_feedback)
         
         if st.session_state.save_data:
             # 允许用户自定义CSV文件路径
@@ -218,6 +249,8 @@ def main():
         metrics_placeholder = st.empty()
         # 为分析结果创建空占位符
         analysis_placeholder = st.empty()
+        # 为语音播报按钮创建空占位符
+        speech_button_placeholder = st.empty()
     
     # 主循环
     while True:
@@ -255,6 +288,23 @@ def main():
             st.subheader("💡 AI Coach Feedback")
             st.markdown(f"**Latest Update ({data['timestamp']}):**")
             st.markdown(analysis)
+        
+        # 添加语音播报按钮
+        with speech_button_placeholder.container():
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                if st.button("🔊 Read Feedback", key="read_feedback"):
+                    text_to_speech(analysis)
+                    st.session_state.last_read_feedback = analysis
+            with col2:
+                if st.session_state.auto_read_feedback:
+                    st.success("Auto-read enabled")
+                    # 只有当分析内容发生变化时才自动播报
+                    if analysis != st.session_state.last_read_feedback:
+                        text_to_speech(analysis)
+                        st.session_state.last_read_feedback = analysis
+                else:
+                    st.info("Auto-read disabled")
         
         time.sleep(10)
 
