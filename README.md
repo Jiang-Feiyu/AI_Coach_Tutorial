@@ -14,8 +14,11 @@
 ## Start the Program
 - if you wanna script: `python main.py --mode terminal`
     ![图片描述](./img/image2.png)
-- if you wanna UI: `python main.py --mode ui`
+
+- if you want to use UI mode: `python main.py --mode ui`, you can configure in the settings panel for data storage and audio output strategy.
     ![图片描述](./img/image.png)
+
+    ![alt text](./img/image.1.png)
 
 ## Prompt
 This prompt is designed for real-time exercise monitoring and analysis by a large language model (LLM). It combines current exercise data with trend analysis to provide actionable insights for athletes and coaches.

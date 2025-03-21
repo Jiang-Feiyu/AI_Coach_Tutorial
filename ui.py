@@ -2,14 +2,61 @@ import streamlit as st
 import time
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
-import streamlit as st
-import time
+import os
+import csv
+from pathlib import Path
 from terminal import simulate_real_time_data, HealthDataSimulator
 from fetch_llm import get_llm_response, analyze_health_data
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
+# 添加保存数据到CSV的函数
+def save_data_to_csv(health_data, csv_path="./data/data.csv"):
+    """
+    将健康数据保存到CSV文件
+    
+    参数:
+        health_data (dict): 包含健康数据的字典
+        csv_path (str): CSV文件保存路径
+    """
+    # 确保目录存在
+    directory = os.path.dirname(csv_path)
+    Path(directory).mkdir(parents=True, exist_ok=True)
+    
+    # 将嵌套字典扁平化为一维字典
+    flat_data = {
+        "timestamp": health_data["timestamp"],
+        "heart_rate": health_data["heart_rate"],
+        "blood_pressure_systolic": health_data["blood_pressure"]["systolic"],
+        "blood_pressure_diastolic": health_data["blood_pressure"]["diastolic"],
+        "blood_oxygen": health_data["blood_oxygen"],
+        "pace": health_data["performance"]["pace"],
+        "stride": health_data["performance"]["stride"],
+        "cadence": health_data["performance"]["cadence"],
+        "duration": health_data["performance"]["duration"],
+        "distance": health_data["performance"]["distance"],
+        "calories": health_data["performance"]["calories"],
+        "altitude": health_data["environment"]["altitude"],
+        "temperature": health_data["environment"]["temperature"],
+        "pressure": health_data["environment"]["pressure"],
+        "humidity": health_data["environment"]["humidity"],
+        "status": health_data["status"]
+    }
+    
+    # 检查文件是否存在
+    file_exists = os.path.isfile(csv_path)
+    
+    # 写入CSV
+    with open(csv_path, mode='a', newline='') as file:
+        fieldnames = flat_data.keys()
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        
+        # 如果文件不存在，写入表头
+        if not file_exists:
+            writer.writeheader()
+        
+        # 写入数据行
+        writer.writerow(flat_data)
+    
+    return csv_path
 
 def initialize_session_state():
     """初始化Session State"""
@@ -30,6 +77,10 @@ def initialize_session_state():
         st.session_state.last_analysis = "Waiting for data..."
     if 'simulator' not in st.session_state:
         st.session_state.simulator = HealthDataSimulator()
+    if 'csv_path' not in st.session_state:
+        st.session_state.csv_path = "./data/data.csv"
+    if 'save_data' not in st.session_state:
+        st.session_state.save_data = True
 
 def update_history(data):
     """更新历史数据"""
@@ -49,6 +100,10 @@ def update_history(data):
     if len(history['timestamp']) > 100:
         for key in history:
             history[key] = history[key][-100:]
+    
+    # 保存数据到CSV
+    if st.session_state.save_data:
+        save_data_to_csv(data, st.session_state.csv_path)
 
 def create_metrics_chart():
     """创建实时指标图表"""
@@ -119,6 +174,39 @@ def main():
     
     st.title("🏃‍♂️ Real-time Exercise Monitor")
     
+    # 添加侧边栏设置
+    with st.sidebar:
+        st.header("Settings")
+        st.session_state.save_data = st.checkbox("Save data to CSV", value=True)
+        
+        if st.session_state.save_data:
+            # 允许用户自定义CSV文件路径
+            custom_path = st.text_input("CSV file path", value=st.session_state.csv_path)
+            if custom_path != st.session_state.csv_path:
+                st.session_state.csv_path = custom_path
+            
+            # 显示当前CSV文件路径和状态
+            csv_file = Path(st.session_state.csv_path)
+            if csv_file.exists():
+                st.success(f"Saving data to: {st.session_state.csv_path}")
+                
+                # 添加查看数据选项
+                if st.button("View Saved Data"):
+                    try:
+                        import pandas as pd
+                        df = pd.read_csv(st.session_state.csv_path)
+                        st.dataframe(df.tail(10))
+                        st.download_button(
+                            label="Download CSV",
+                            data=open(st.session_state.csv_path, 'rb').read(),
+                            file_name="exercise_data.csv",
+                            mime="text/csv"
+                        )
+                    except Exception as e:
+                        st.error(f"Error reading CSV: {e}")
+            else:
+                st.info(f"Will create: {st.session_state.csv_path} when data is generated")
+    
     # 创建两列布局
     col1, col2 = st.columns([2, 1])
     
@@ -153,6 +241,10 @@ def main():
                 st.metric("Pace", f"{data['performance']['pace']:.1f} min/km")
                 st.metric("Temperature", f"{data['environment']['temperature']}°C")
                 st.metric("Humidity", f"{data['environment']['humidity']}%")
+            
+            # 添加数据保存状态提示
+            if st.session_state.save_data:
+                st.caption(f"✅ Data saved to {st.session_state.csv_path}")
         
         # 更新分析
         prompt = analyze_health_data(data, st.session_state.simulator.data_history)

@@ -1,17 +1,24 @@
 from fetch_llm import get_llm_response, analyze_health_data
 from terminal import simulate_real_time_data, HealthDataSimulator
+from data_storage import save_data_to_csv
 import json
 import time
 from datetime import datetime
 import argparse
 import subprocess
 import sys
+import os
+import csv
+from pathlib import Path
 
 def run_terminal_mode(simulator):
     """在终端模式下运行"""
     try:
         while True:
             health_data = simulator.generate_health_data()
+            
+            # 保存数据到CSV
+            save_data_to_csv(health_data)
             
             # 显示当前数据
             print("\nCurrent Health Data:")

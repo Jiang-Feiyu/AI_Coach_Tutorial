@@ -1,0 +1,2 @@
+timestamp,heart_rate,blood_pressure_systolic,blood_pressure_diastolic,blood_oxygen,pace,stride,cadence,duration,distance,calories,altitude,temperature,pressure,humidity,status
+2025-03-21 19:51:33,76,118,80,98.0,5.41,0.79,154,0.02,0.003,0.2,53,24.7,1009,57,normal
