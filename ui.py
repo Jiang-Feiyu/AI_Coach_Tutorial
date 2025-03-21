@@ -86,6 +86,9 @@ def initialize_session_state():
         st.session_state.auto_read_feedback = False
     if 'last_read_feedback' not in st.session_state:
         st.session_state.last_read_feedback = ""
+    # 添加一个计数器用于生成唯一的键
+    if 'button_counter' not in st.session_state:
+        st.session_state.button_counter = 0
 
 def update_history(data):
     """更新历史数据"""
@@ -208,7 +211,8 @@ def main():
         # 添加语音反馈设置
         st.subheader("Voice Feedback Settings")
         st.session_state.auto_read_feedback = st.checkbox("Auto-read AI Coach Feedback", 
-                                                         value=st.session_state.auto_read_feedback)
+                                                         value=st.session_state.auto_read_feedback,
+                                                         key="auto_read_checkbox")
         
         if st.session_state.save_data:
             # 允许用户自定义CSV文件路径
@@ -222,7 +226,7 @@ def main():
                 st.success(f"Saving data to: {st.session_state.csv_path}")
                 
                 # 添加查看数据选项
-                if st.button("View Saved Data"):
+                if st.button("View Saved Data", key="view_data_button"):
                     try:
                         import pandas as pd
                         df = pd.read_csv(st.session_state.csv_path)
@@ -231,7 +235,8 @@ def main():
                             label="Download CSV",
                             data=open(st.session_state.csv_path, 'rb').read(),
                             file_name="exercise_data.csv",
-                            mime="text/csv"
+                            mime="text/csv",
+                            key="download_button"
                         )
                     except Exception as e:
                         st.error(f"Error reading CSV: {e}")
@@ -289,11 +294,15 @@ def main():
             st.markdown(f"**Latest Update ({data['timestamp']}):**")
             st.markdown(analysis)
         
-        # 添加语音播报按钮
+        # 递增按钮计数器以生成唯一key
+        st.session_state.button_counter += 1
+        button_key = f"read_feedback_{st.session_state.button_counter}"
+        
+        # 添加语音播报按钮 - 使用动态生成的唯一key
         with speech_button_placeholder.container():
             col1, col2 = st.columns([1, 1])
             with col1:
-                if st.button("🔊 Read Feedback", key="read_feedback"):
+                if st.button("🔊 Read Feedback", key=button_key):
                     text_to_speech(analysis)
                     st.session_state.last_read_feedback = analysis
             with col2:

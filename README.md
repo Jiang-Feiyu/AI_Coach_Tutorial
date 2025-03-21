@@ -15,88 +15,43 @@
 - if you wanna script: `python main.py --mode terminal`
     ![图片描述](./img/image2.png)
 
-- if you want to use UI mode: `python main.py --mode ui`, you can configure in the settings panel for data storage and audio output strategy.
+- if you want to use UI mode: `python main.py --mode ui`
+  - can configure data storage and audio output strategy in the settings panel .
     ![图片描述](./img/image.png)
 
     ![alt text](./img/image.1.png)
 
+## Core Functions
+
+### Data Management
+- Sets up application state variables for metrics, history, and UI settings
+- Updates time-series data for visualization while maintaining a rolling window of 100 data points
+- Persists health metrics to CSV files with comprehensive metadata and timestamps
+
+## Visualization
+Generates multi-panel Plotly charts displaying vital signs, performance metrics, and environmental conditions in real-time
+
+## AI Feedback
+-  Prepares contextual prompts for the LLM based on current metrics and historical trends
+- Retrieves AI-generated coaching feedback about exercise performance and health status
+
+## Voice Features
+- Converts AI feedback to spoken audio using Web Speech API
+- Supports both manual triggering via button and automatic reading of new feedback
+
+## Health Data Simulation
+-  Establishes personalized baseline metrics and simulates realistic physiological responses
+-  Incrementally adjusts exercise intensity and duration with appropriate metabolic responses
+-  Generates comprehensive data points with natural variations for authentic training scenarios
+
 ## Data Storage
-- Exercise data is automatically saved to `./data/data.csv` by default
-- You can easily customize the storage location through the UI settings panel
-- The system creates structured CSV files with timestamps, vital signs, performance metrics, and environmental data
-- All stored data is available for export, visualization, and long-term analysis
+-   Exercise data is automatically saved to `./data/data.csv` by default
+-   Custom storage location configurable through the UI settings panel
+-   Structured CSV format includes timestamps, vital signs, performance metrics, and environmental data
+-   Supports data export, visualization, and longitudinal analysis
 
-## Prompt
-This prompt is designed for real-time exercise monitoring and analysis by a large language model (LLM). It combines current exercise data with trend analysis to provide actionable insights for athletes and coaches.
-
-You can personalize the prompt in `.env`
-```
-    prompt = f"""
-    REAL-TIME EXERCISE DATA:
-    Vitals: HR {data['heart_rate']}bpm, BP {data['blood_pressure']['systolic']}/{data['blood_pressure']['diastolic']}, SpO2 {data['blood_oxygen']}%
-    Performance: {data['performance']['pace']} min/km, {data['performance']['distance']} km
-
-    10-Record Trends:
-    ❤️ HR: {trends['heart_rate_trend']}
-    🩺 BP: {trends['blood_pressure_trend']}
-    🫁 SpO2: {trends['blood_oxygen_trend']}
-    ⚡ Pace: {trends['pace_trend']}
-
-    Provide a 50-100 word analysis covering:
-    1. Safety status & risks
-    2. Performance trends
-    3. Key recommendations
-
-    Focus on critical changes and immediate action items. Be concise and direct.
-    """
-```
-Design Principles：
-- **Pre-processed Trends**: Instead of raw historical data, provides calculated trends (increasing, decreasing, stable) from the last 10 records, reducing token usage while maintaining essential information.
-- **Clear Instructions**: Requests a specific word count and content structure to ensure consistent, actionable responses.
-- **Focus on Relevance**: Directs the LLM to prioritize critical changes and immediate action items, avoiding verbose or generic responses.
-
-System message
-```
-Design Principles：
-- **Pre-processed Trends**: Instead of raw historical data, provides calculated trends (increasing, decreasing, stable) from the last 10 records, reducing token usage while maintaining essential information.
-- **Clear Instructions**: Requests a specific word count and content structure to ensure consistent, actionable responses.
-- **Focus on Relevance**: Directs the LLM to prioritize critical changes and immediate action items, avoiding verbose or generic responses.
-
-SYSTEM_MESSAGE = """You are a professional healthcare and sports medicine expert who specializes in real-time exercise monitoring.
-
-Core Guidelines:
-1. Monitor vital signs and performance metrics
-2. Provide instant safety assessments
-3. Give personalized exercise guidance
-4. Use clear, actionable language
-5. Focus on athlete safety and performance
-
-Exercise Reference Ranges:
-• Heart Rate Zones:
-- Zone 1 (50-60%): Warm-up
-- Zone 2 (60-70%): Fat burn
-- Zone 3 (70-80%): Aerobic
-- Zone 4 (80-90%): Anaerobic
-- Zone 5 (90-100%): Maximum
-
-• Blood Pressure Response:
-- Normal exercise increase: +20-40/+10-20 mmHg
-- Warning levels: >180/120 mmHg
-
-• Other Metrics:
-- SpO2: Should stay >95%
-- RPE: 6-20 scale (Borg)
-"""
-```
-
-## Health Data Simulator
--   Establishes baseline metrics for an individual (resting heart rate, blood pressure, etc.)
--   Incrementally increases exercise duration and intensity
--   Adjusts physiological responses based on exercise factor (with randomization for realism)
--   Generates comprehensive data points at regular intervals
--   Maintains a rolling history of the most recent data
-
-### Base Physiological Parameters
+### Appendix
+#### Base Physiological Parameters
 
 | Parameter | Value | Unit | Description |
 |-----------|-------|------|-------------|
@@ -105,7 +60,7 @@ Exercise Reference Ranges:
 | `base_blood_pressure_diastolic` | 80 | mmHg | Resting diastolic blood pressure |
 | `base_blood_oxygen` | 98 | % | Resting blood oxygen saturation |
 
-### Performance Parameters
+#### Performance Parameters
 
 | Parameter | Value | Unit | Description |
 |-----------|-------|------|-------------|
@@ -113,7 +68,7 @@ Exercise Reference Ranges:
 | `base_stride` | 0.8 | m | Base stride length |
 | `base_cadence` | 160 | steps/min | Base step frequency |
 
-## Environmental Parameters
+#### Environmental Parameters
 
 | Parameter | Value | Unit | Description |
 |-----------|-------|------|-------------|
@@ -122,7 +77,7 @@ Exercise Reference Ranges:
 | `base_pressure` | 1013 | hPa | Base atmospheric pressure |
 | `base_humidity` | 60 | % | Base humidity level |
 
-### Exercise Parameters
+#### Exercise Parameters
 
 | Parameter | Initial Value | Unit | Description |
 |-----------|---------------|------|-------------|
@@ -130,7 +85,7 @@ Exercise Reference Ranges:
 | `total_distance` | 0 | km | Total distance covered (accumulates during simulation) |
 | `calories_burned` | 0 | kcal | Total calories burned (accumulates during simulation) |
 
-### Status Thresholds
+#### Status Thresholds
 
 | Status | Condition |
 |--------|-----------|
@@ -138,7 +93,7 @@ Exercise Reference Ranges:
 | `warning` | Heart rate > 160 bpm OR Blood oxygen < 95% |
 | `critical` | Heart rate > 180 bpm OR Blood oxygen < 90% |
 
-### Physiological Adjustments During Exercise
+#### Physiological Adjustments During Exercise
 | Parameter | Adjustment Formula | Max Change | 
 |-----------|-------------------|------------| 
 | Heart Rate | `base + (40 * exercise_factor) + random(-10, 10)` | +40 bpm | 
@@ -146,7 +101,7 @@ Exercise Reference Ranges:
 | Diastolic BP | `base + (10 * exercise_factor) + random(-5, 5)` | +10 mmHg | 
 | Blood Oxygen | `base - exercise_factor + random(-1, 1)` | -1%
 
-### Data Structure
+#### Data Structure
 
 ```json
 {
