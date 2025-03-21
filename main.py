@@ -43,6 +43,7 @@ def run_terminal_mode(simulator):
             
             # 传入历史数据获取AI分析
             prompt = analyze_health_data(health_data, simulator.data_history)
+            # print(prompt)
             response = get_llm_response(prompt)
             
             print("\nAI Coach Analysis:")

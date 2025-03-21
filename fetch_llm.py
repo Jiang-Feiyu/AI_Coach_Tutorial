@@ -1,8 +1,8 @@
 import os
 import openai
 from dotenv import load_dotenv
-
-SYSTEM_MESSAGE = """You are a professional healthcare and sports medicine expert who specializes in real-time exercise monitoring.
+# Setting the environment variable
+os.environ["SYSTEM_MESSAGE"] = """You are a professional healthcare and sports medicine expert who specializes in real-time exercise monitoring.
 
 Core Guidelines:
 1. Monitor vital signs and performance metrics
@@ -28,7 +28,29 @@ Exercise Reference Ranges:
 - RPE: 6-20 scale (Borg)
 """
 
-def get_llm_response(prompt, system_message=SYSTEM_MESSAGE):
+os.environ["EXERCISE_ANALYSIS_TEMPLATE"] = """
+REAL-TIME EXERCISE DATA:
+Vitals: HR {heart_rate}bpm, BP {systolic}/{diastolic}, SpO2 {blood_oxygen}%
+Performance: {pace} min/km, {distance} km
+
+10-Record Trends:
+❤️ HR: {heart_rate_trend}
+🩺 BP: {blood_pressure_trend}
+🫁 SpO2: {blood_oxygen_trend}
+⚡ Pace: {pace_trend}
+
+Provide a 50-100 word analysis covering:
+1. Safety status & risks
+2. Performance trends
+3. Key recommendations
+
+Focus on critical changes and immediate action items. Be concise and direct.
+"""
+
+# Reading the environment variable
+system_message = os.environ.get("SYSTEM_MESSAGE")
+
+def get_llm_response(prompt, system_message=system_message):
     """Get LLM model response"""
     load_dotenv()
     api_key = os.environ.get("SAMBANOVA_API_KEY")
@@ -95,29 +117,28 @@ def analyze_trends(data_history):
 def analyze_health_data(data, data_history):
     """Generate exercise analysis prompt with trend analysis"""
     trends = analyze_trends(data_history)
-    # print("prompt =======================================================================================")
+    # print("====================trends==========================")
+    # print(trends)
+    # print("====================trends==========================")
     
-    prompt = f"""
-    REAL-TIME EXERCISE DATA:
-    Vitals: HR {data['heart_rate']}bpm, BP {data['blood_pressure']['systolic']}/{data['blood_pressure']['diastolic']}, SpO2 {data['blood_oxygen']}%
-    Performance: {data['performance']['pace']} min/km, {data['performance']['distance']} km
-
-    10-Record Trends:
-    ❤️ HR: {trends['heart_rate_trend']}
-    🩺 BP: {trends['blood_pressure_trend']}
-    🫁 SpO2: {trends['blood_oxygen_trend']}
-    ⚡ Pace: {trends['pace_trend']}
-
-    Provide a 50-100 word analysis covering:
-    1. Safety status & risks
-    2. Performance trends
-    3. Key recommendations
-
-    Focus on critical changes and immediate action items. Be concise and direct.
-    """
-    # print(prompt)
-    # print("prompt =======================================================================================")
-    return prompt
+    # 从环境变量获取模板
+    prompt_template = os.environ.get("EXERCISE_ANALYSIS_TEMPLATE")
+    
+    # 格式化模板，插入当前数据和趋势
+    formatted_prompt = prompt_template.format(
+        heart_rate=data["heart_rate"],
+        systolic=data["blood_pressure"]["systolic"],
+        diastolic=data["blood_pressure"]["diastolic"],
+        blood_oxygen=data["blood_oxygen"],
+        pace=data["performance"]["pace"],
+        distance=data["performance"]["distance"],
+        heart_rate_trend=trends["heart_rate_trend"],
+        blood_pressure_trend=trends["blood_pressure_trend"],
+        blood_oxygen_trend=trends["blood_oxygen_trend"],
+        pace_trend=trends["pace_trend"]
+    )
+    
+    return formatted_prompt
 
 def main():
     # 示例调用
