@@ -16,7 +16,5 @@ env/
 ENV/
 
 # Ignore all files in the data directory
+/data/
 /data/*
-
-# But keep the directory structure
-!/data/.gitkeep
