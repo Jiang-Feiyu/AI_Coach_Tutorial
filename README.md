@@ -20,6 +20,12 @@
 
     ![alt text](./img/image.1.png)
 
+## Data Storage
+- Exercise data is automatically saved to `./data/data.csv` by default
+- You can easily customize the storage location through the UI settings panel
+- The system creates structured CSV files with timestamps, vital signs, performance metrics, and environmental data
+- All stored data is available for export, visualization, and long-term analysis
+
 ## Prompt
 This prompt is designed for real-time exercise monitoring and analysis by a large language model (LLM). It combines current exercise data with trend analysis to provide actionable insights for athletes and coaches.
 

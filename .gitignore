@@ -14,3 +14,9 @@ __pycache__/
 venv/
 env/
 ENV/
+
+# Ignore all files in the data directory
+/data/*
+
+# But keep the directory structure
+!/data/.gitkeep
