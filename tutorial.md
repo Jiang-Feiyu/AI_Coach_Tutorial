@@ -66,24 +66,17 @@ Main_function --save data--> Log_file
 Main_function <-- API request--> LLM_API
 Main_function -- output--> UI
 ```
-
     │  .env
     │  .env.example
-    │  .gitignore
     │  data_storage.py
     │  fetch_llm.py
     │  main.py
     │  README.md
-    │  requirements.txt
     │  terminal.py
     │  tutorial.md
     │  ui.py
-    │
     ├─data
-    │
-    ├─img
-    │
-    └─__pycache__
+    └─img
 
 *   `terminal.py`: Generates exercise data. (if you have a terminal device, you can rewrite the function to collect exercise data according to your needs, but you need to check the corresponding device documentation)
 *   `fetch_llm.py`: Interface with LLM API. You can adjust model output by changing prompt environment variables in `.env`.
@@ -196,13 +189,16 @@ Open with `fetch_llm.py`:
             Return: "low", "moderate", or "high"
             """
             pass
+```
+```
         def suggest_intensity_adjustment(current_intensity, trends):
             """
             Suggest intensity adjustments based on performance trends
             Return: "increase", "decrease", or "maintain"
             """
             pass
-
+```
+```
         def generate_next_workout_type(user_profile, trends):
             """
             Suggest next workout type based on user profile and trends
@@ -229,24 +225,43 @@ Open with `fetch_llm.py`:
 
         return recommendations
 ```
-*   test data:
+*   You can test with simulated data from `terminal.py`
 
-```
-    test_data = {
-        "heart_rate": 140,
-        "blood_pressure": {"systolic": 122, "diastolic": 82},
-        "blood_oxygen": 98,
-        "performance": {"pace": 6.5, "distance": 5.0, "calories": 450}
-    }
+<div STYLE="page-break-after: always;"></div>
 
-    test_trends = {
-        "heart_rate_trend": "stable",
-        "blood_pressure_trend": "stable",
-        "blood_oxygen_trend": "stable",
-        "pace_trend": "improving",
-        "performance_trend": "improving"
-    }
+### Task 4: Optimize the Prompt
+*   Please try to modify with `SYSTEM_MESSAGE` and `EXERCISE_ANALYSIS_TEMPLATE` in `.env`, whcih is the system prompt and user prompt. You can try with several strategies to improve the output from LLM:
+
+1.**Setting the Right Tone**
+When crafting your system message, try different approaches:
+- Professional Tone: "Analyze this workout data as a certified fitness trainer"
+- Supportive Tone: "Provide feedback as an encouraging personal coach"
+- Technical Tone: "Evaluate this exercise data as a sports scientist"
+
+2. **Structuring Your Prompts**
+- Good example, feed with structured data and request specific formatting::
 ```
+Analyze my running data:
+- Distance: 5km
+- Time: 30 minutes
+- Average heart rate: 150bpm
+Please provide feedback on:
+1. Performance analysis
+2. Areas for improvement
+3. Specific recommendations
+```
+- Weak example: "How was my run? I did 5k in 30 mins"
+
+3. **Improving Response Accuracy**
+Ask for:
+- Evidence-based recommendations
+- Specific metrics analysis
+- Comparative benchmarks
+
+1. **play with the parameters**
+- **Temperature**: Controls randomness/creativity in responses, Lower values = more deterministic
+- **Top_p** (Nucleus Sampling): Controls diversity of responses, Lower values = more focused
+- **Max Tokens**: Maximum length of response
 
 <div STYLE="page-break-after: always;"></div>
 
