@@ -22,41 +22,37 @@ The rapid advancement of wearable sensor technology and AI-powered analytics has
     `git clone https://github.com/Jiang-Feiyu/AI_Coach.git`
 
 3.  **Python Environment Setup**:
+    ```
         # Create and activate a new conda environment
         conda create -n AIcoach python=3.9.20
         conda activate AIcoach
-
         # Install required packages
         pip install -r requirements.txt
-
+    ```
 4.  **Environment Variables Configuration**
-        # Copy the example configuration file
+    ``` # Copy the example configuration file
         cp .env.example .env
 
         # Edit the .env file and add your SambaNova API key
         # SAMBANOVA_API_KEY="your-key-here"
-
         # You can customize the system prompt and user prompt 
         # by modifying the SYSTEM_MESSAGE and EXERCISE_ANALYSIS_TEMPLATE.
-
+    ```
 5.  **Prerequisites Knowledge**
 
-*   Technical Knowledge:
+*   **Technical Knowledge**:
     *   Python programming fundamentals
     *   API fundamentals (REST, HTTP requests, authentication)
     *   Basic data handling (JSON, CSV operations)
 
-*   Health & Fitness Knowledge:
+*   **Health & Fitness Knowledge**:
     *   Understanding of physiological metrics
     *   Knowledge of heart rate zones
     *   Basic comprehension of fatigue indicators
 
-*   Hardware Requirements
+*   **Hardware Requirements** (not mandatory,this tutorial provides a method to simulate data for exploration)
 
-    \[not mandatory - if you don't have a wearable device, this tutorial provides a method to simulate data for exploration]
-
-    *   Wearable sensor (Apple Watch/Fitbit) with Bluetooth
-
+    
 <div STYLE="page-break-after: always;"></div>
 
 ## **Step-by-Step Guide**
@@ -95,40 +91,38 @@ Main_function -- output--> UI
 *   `data_storage.py`: Saves historical data in .csv format under `./data` directory.
 *   `main.py`: Main function. Implements program functionality by calling other modules. Provides two running modes: UI view and terminal mode (headless).
 
+<div STYLE="page-break-after: always;"></div>
+
 ### Task 1: Add features to the simulator!
 
 Open with `terminal.py`
 
 *   Add input validation to ensure the generated data stays within realistic ranges.
 
-<!---->
-
+```
     def validate_health_data(self, data):
         """
         Validate health data is within acceptable ranges
         Returns: (is_valid, message)
         """
         if not (40 <= data["heart_rate"] <= 200):
-            return False, "Heart rate out of range"
-        if not (85 <= data["blood_pressure"]["systolic"] <= 200):
-            return False, "Systolic pressure out of range"
+            ...
         # ============================================================
         # Add your code here 
         # more validation rules
         # ============================================================
         return True, "Data valid"
+```
 
 *   Create a method that simulates a complete workout session with different phase
 
-<!---->
-
+```
     def simulate_workout_session(self, workout_plan):
         """
         workout_plan example:
         [
             ("warmup", 5),      # 5 minutes warmup
-            ("running", 20),    # 20 minutes running
-            ("cooldown", 5)     # 5 minutes cooldown
+            ...
         ]
         """
         # ============================================================
@@ -136,10 +130,9 @@ Open with `terminal.py`
         # Create a method that simulates a complete workout session with different phases
         # ============================================================
         pass
+```
 
-*   Beyond modifying this function, you'll need to correspondingly update the data structures and control flow. This enhancement makes the data stream more realistic and aligned with actual exercise patterns.
-
-Remember: A well-structured workout simulation better reflects real-world scenarios where physiological parameters change gradually and predictably with exercise intensity!
+*   Beyond modifying this function, you'll need to correspondingly update the data structures and control flow. This enhancement makes the data stream more realistic and aligned with actual exercise patterns. 
 
 <div STYLE="page-break-after: always;"></div>
 
@@ -149,8 +142,7 @@ During the program process, loads of data may need to be handled. So a good data
 
 *   File mamagement
 
-<!---->
-
+```
     def manage_file_rotation(csv_path, max_size_mb=10):
             # ==========================================================
             # Add your code here 
@@ -161,6 +153,7 @@ During the program process, loads of data may need to be handled. So a good data
             # - Check and manage file size
             # ==========================================================
             pass
+```
 
 A good data management can ensure data integrity, optimize system performance, and facilitate efficient data analysis while maintaining long-term operational sustainability.
 
@@ -173,8 +166,7 @@ Open with `fetch_llm.py`:
 *   Implement a system that generates personalized exercise recommendations based on workout data, trends, and user profile.
 *   There is not limitation for you to modify specific function, you can explore whatever you want! Here is an example for you to reference:
 
-<!---->
-
+```
     def generate_exercise_recommendations(current_data, trends, user_profile=None):
         """
         Generate personalized exercise recommendations
@@ -187,13 +179,16 @@ Open with `fetch_llm.py`:
         Returns:
             dict: Personalized recommendations
         """
+```
+```
         # TODO 1: Implement default user profile if none provided
         if user_profile is None:
             user_profile = {
                 # Add default user profile values here
                 pass
             }
-
+```
+```
         # TODO 2: Implement these helper functions
         def assess_recovery_needs(heart_rate, heart_rate_trend):
             """
@@ -201,7 +196,6 @@ Open with `fetch_llm.py`:
             Return: "low", "moderate", or "high"
             """
             pass
-
         def suggest_intensity_adjustment(current_intensity, trends):
             """
             Suggest intensity adjustments based on performance trends
@@ -215,7 +209,8 @@ Open with `fetch_llm.py`:
             Return: list of recommended workout types
             """
             pass
-
+```
+```
         # TODO 3: Generate final recommendations dictionary
         recommendations = {
             "next_workout": {
@@ -233,11 +228,10 @@ Open with `fetch_llm.py`:
         }
 
         return recommendations
-
+```
 *   test data:
 
-<!---->
-
+```
     test_data = {
         "heart_rate": 140,
         "blood_pressure": {"systolic": 122, "diastolic": 82},
@@ -252,6 +246,7 @@ Open with `fetch_llm.py`:
         "pace_trend": "improving",
         "performance_trend": "improving"
     }
+```
 
 <div STYLE="page-break-after: always;"></div>
 
@@ -278,6 +273,8 @@ For the result, you can refer to
 
   ![alt text](./img/image.1.png)
 
+<div STYLE="page-break-after: always;"></div>
+
 ## Conclusion
 This tutorial demonstrates the development of an innovative AI-powered running coach that seamlessly integrates wearable sensor technology with advanced LLM capabilities. Through practical step-by-step guidance, it shows how to build a comprehensive system for real-time exercise monitoring, data analysis, and personalized coaching. The tutorial covers essential aspects from data simulation and management to AI-driven feedback generation, emphasizing both technical implementation and user experience. 
 
@@ -291,7 +288,9 @@ By following this guide, developers can create intelligent fitness solutions tha
 - Streamlit Documentation. [Building Data Apps.](https://docs.streamlit.io/)
 - Apple Inc. [HealthKit Documentation.](https://developer.apple.com/documentation/healthkit)
 
-## [Appendix](./appendix.md)
+<div STYLE="page-break-after: always;"></div>
+
+## [Appendix](https://github.com/Jiang-Feiyu/AI_Coach_Tutorial/blob/main/appendix.md)
 
 <div STYLE="page-break-after: always;"></div>
 
@@ -320,12 +319,10 @@ Provide:
 A: We welcome contributions! To contribute:
 - Fork the repository
 - Create a new branch for your feature/fix
-- Make your changes
 - Submit a Pull Request with:
-- Clear description of changes
-- Any new dependencies added
-- Test results
-- Screenshots of new features (if applicable)
+  - Clear description of changes
+  - Any new dependencies added
+  - Test results
 
 <div STYLE="page-break-after: always;"></div>
 
