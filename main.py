@@ -17,27 +17,21 @@ def run_terminal_mode(simulator):
         while True:
             health_data = simulator.generate_health_data()
             
-            # 保存数据到CSV
             save_data_to_csv(health_data)
-            
-            # 显示当前数据
+        
             print("\nCurrent Health Data:")
             print(json.dumps(health_data, indent=2))
             
-            # 显示历史数据列表
             if len(simulator.data_history) > 1:
                 print("\n=== Historical Data (Last 5 records) ===")
                 
-                # 取最近的10条记录(如果有的话)
                 recent_history = simulator.data_history[-10:] if len(simulator.data_history) >= 10 else simulator.data_history
                 
-                # 打印每条历史记录的关键信息
                 for i, record in enumerate(recent_history):
                     print(f"\nRecord {i+1} - {record['timestamp']}:")
                     print(f"  HR: {record['heart_rate']} bpm | BP: {record['blood_pressure']['systolic']}/{record['blood_pressure']['diastolic']} | SpO2: {record['blood_oxygen']}%")
                     print(f"  Pace: {record['performance']['pace']:.2f} min/km | Distance: {record['performance']['distance']:.3f} km")
                 
-                # 显示历史数据趋势
                 print("\n=== Trend Analysis ===")
                 from fetch_llm import analyze_trends
                 trends = analyze_trends(simulator.data_history)
@@ -48,9 +42,7 @@ def run_terminal_mode(simulator):
                 print(f"⚡ Pace Trend: {trends['pace_trend']}")
                 print(f"📈 Overall Performance Trend: {trends['performance_trend']}")
             
-            # 传入历史数据获取AI分析
             prompt = analyze_health_data(health_data, simulator.data_history)
-            # print(prompt)
             response = get_llm_response(prompt)
             
             print("\nAI Coach Analysis:")
@@ -61,7 +53,6 @@ def run_terminal_mode(simulator):
         print("\nProgram stopped")
 
 def run_ui_mode():
-    """启动UI模式"""
     try:
         subprocess.run(["streamlit", "run", "ui.py"])
     except FileNotFoundError:

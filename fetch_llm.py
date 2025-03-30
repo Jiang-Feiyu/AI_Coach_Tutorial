@@ -73,7 +73,6 @@ def get_llm_response(prompt, system_message=system_message):
     return response.choices[0].message.content
 
 def analyze_trends(data_history):
-    """分析数据趋势"""
     if not data_history:
         return {}
         
@@ -87,7 +86,6 @@ def analyze_trends(data_history):
         "calories": []
     }
     
-    # 收集数据
     for data in data_history:
         trends["heart_rate"].append(data["heart_rate"])
         trends["blood_pressure_systolic"].append(data["blood_pressure"]["systolic"])
@@ -97,12 +95,11 @@ def analyze_trends(data_history):
         trends["distance"].append(data["performance"]["distance"])
         trends["calories"].append(data["performance"]["calories"])
     
-    # 计算变化
     def calculate_trend(values):
         if len(values) < 2:
             return "stable"
         diff = values[-1] - values[0]
-        if abs(diff) < 0.05 * values[0]:  # 5%阈值
+        if abs(diff) < 0.05 * values[0]: 
             return "stable"
         return "increasing" if diff > 0 else "decreasing"
     
@@ -117,14 +114,9 @@ def analyze_trends(data_history):
 def analyze_health_data(data, data_history):
     """Generate exercise analysis prompt with trend analysis"""
     trends = analyze_trends(data_history)
-    # print("====================trends==========================")
-    # print(trends)
-    # print("====================trends==========================")
     
-    # 从环境变量获取模板
     prompt_template = os.environ.get("EXERCISE_ANALYSIS_TEMPLATE")
     
-    # 格式化模板，插入当前数据和趋势
     formatted_prompt = prompt_template.format(
         heart_rate=data["heart_rate"],
         systolic=data["blood_pressure"]["systolic"],
@@ -141,7 +133,6 @@ def analyze_health_data(data, data_history):
     return formatted_prompt
 
 def main():
-    # 示例调用
     prompt = "Hello"
     response = get_llm_response(prompt)
     print(response)

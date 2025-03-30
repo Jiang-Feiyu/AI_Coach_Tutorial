@@ -4,7 +4,7 @@ Tutorial writhing Assignment
 
 Author
 - Jiang Feiyu <3035770800>
-- Wu Jiaux <>
+- Wu Jiaux <3036410330>
 
 ## Introduction
 

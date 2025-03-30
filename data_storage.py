@@ -5,17 +5,16 @@ from pathlib import Path
 
 def save_data_to_csv(health_data, csv_path="./data/data.csv"):
     """
-    将健康数据保存到CSV文件
+    save data into the CSV file
     
-    参数:
-        health_data (dict): 包含健康数据的字典
-        csv_path (str): CSV文件保存路径
+    parameters:
+        health_data (dict): directory with data
+        csv_path (str): CSV file saving path
     """
-    # 确保目录存在
+
     directory = os.path.dirname(csv_path)
     Path(directory).mkdir(parents=True, exist_ok=True)
     
-    # 将嵌套字典扁平化为一维字典
     flat_data = {
         "timestamp": health_data["timestamp"],
         "heart_rate": health_data["heart_rate"],
@@ -34,20 +33,30 @@ def save_data_to_csv(health_data, csv_path="./data/data.csv"):
         "humidity": health_data["environment"]["humidity"],
         "status": health_data["status"]
     }
+
     
-    # 检查文件是否存在
+    def manage_file_rotation(csv_path, max_size_mb=10):
+        # ==========================================================
+        # Add your code here 
+        # Task2 : File Management
+        # Modify your code here to:
+        # - Implement file rotation based on size or date
+        # - Add backup functionality
+        # - Check and manage file size
+        # ==========================================================
+        pass
+
+    # check if the file exists
     file_exists = os.path.isfile(csv_path)
     
-    # 写入CSV
+    # writr into CSV
     with open(csv_path, mode='a', newline='') as file:
         fieldnames = flat_data.keys()
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         
-        # 如果文件不存在，写入表头
         if not file_exists:
             writer.writeheader()
         
-        # 写入数据行
         writer.writerow(flat_data)
     
     return csv_path
