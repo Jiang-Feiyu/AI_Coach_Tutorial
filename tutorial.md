@@ -2,7 +2,7 @@
 
 *   **Jiang Feiyu** <3035770800>
 *   **Wu Jiaux** <3036410330>
-*   [Github Link](https://github.com/Jiang-Feiyu/AI_Coach)
+*   [Github Link](https://github.com/Jiang-Feiyu/AI_Coach_Tutorial#)
 
 ## **Introduction**
 
