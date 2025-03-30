@@ -278,13 +278,21 @@ For the result, you can refer to
   ![alt text](./img/image.1.png)
 
 ## Conclusion
-This tutorial demonstrates the development of an innovative AI-powered running coach that seamlessly integrates wearable sensor technology with advanced LLM capabilities. Through practical step-by-step guidance, it shows how to build a comprehensive system for real-time exercise monitoring, data analysis, and personalized coaching. The tutorial covers essential aspects from data simulation and management to AI-driven feedback generation, emphasizing both technical implementation and user experience. By following this guide, developers can create intelligent fitness solutions that combine physiological monitoring with adaptive coaching, ultimately enhancing training effectiveness and user engagement in personal fitness journeys.
+This tutorial demonstrates the development of an innovative AI-powered running coach that seamlessly integrates wearable sensor technology with advanced LLM capabilities. Through practical step-by-step guidance, it shows how to build a comprehensive system for real-time exercise monitoring, data analysis, and personalized coaching. The tutorial covers essential aspects from data simulation and management to AI-driven feedback generation, emphasizing both technical implementation and user experience. 
+
+By following this guide, developers can create intelligent fitness solutions that combine physiological monitoring with adaptive coaching, ultimately enhancing training effectiveness and user engagement in personal fitness journeys. As wearable technology and AI continue to evolve, systems like AI Coach will play an increasingly important role in personal health management, athletic training, and clinical applications.
+
+<div STYLE="page-break-after: always;"></div>
 
 ## References
 - Meta AI. [Llama 3: The Next Generation of Open Language Models.](https://ai.meta.com/llama/)
 - SambaNova Systems. [SambaNova Cloud API Documentation.](https://cloud.sambanova.ai/apis)
 - Streamlit Documentation. [Building Data Apps.](https://docs.streamlit.io/)
 - Apple Inc. [HealthKit Documentation.](https://developer.apple.com/documentation/healthkit)
+
+## [Appendix](./appendix.md)
+
+<div STYLE="page-break-after: always;"></div>
 
 ## **FAQs**
 **Q: Maybe API Rate Limit Exceeded (Error 429) occurs. What does the "RateLimitError: 429" error mean?**
@@ -317,6 +325,8 @@ A: We welcome contributions! To contribute:
 - Any new dependencies added
 - Test results
 - Screenshots of new features (if applicable)
+
+<div STYLE="page-break-after: always;"></div>
 
 ## Acknowledgement:  
 This tutorial was developed with assistance from various AI tools for code review and documentation refinement. Special thanks to SambaNova Systems for providing API access to their LLM services. The exercise data simulation algorithms were inspired by open-source contributions from the fitness technology community.
