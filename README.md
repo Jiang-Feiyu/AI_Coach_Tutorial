@@ -1,6 +1,6 @@
 # AI Coach: Real-time Performance Analysis Using Wearable Sensors and LLM
 
-You can find tutorial [here](tutorial.md)
+### You can find **tutorial** [here](tutorial.md)
 
 ## Setup
 1. **SambaNova Cloud API Configuration**:

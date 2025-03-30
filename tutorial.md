@@ -18,7 +18,8 @@ The rapid advancement of wearable sensor technology and AI-powered analytics has
     *   Store this key securely as it will be needed for LLM integration
 
 2.  **Clone from Github**
-        git clone https://github.com/Jiang-Feiyu/AI_Coach.git
+    
+    `git clone https://github.com/Jiang-Feiyu/AI_Coach.git`
 
 3.  **Python Environment Setup**:
         # Create and activate a new conda environment
