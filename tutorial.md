@@ -232,7 +232,7 @@ Open with `fetch_llm.py`:
 ### Task 4: Optimize the Prompt
 *   Please try to modify with `SYSTEM_MESSAGE` and `EXERCISE_ANALYSIS_TEMPLATE` in `.env`, whcih is the system prompt and user prompt. You can try with several strategies to improve the output from LLM:
 
-1.**Setting the Right Tone**
+1. **Setting the Right Tone**
 When crafting your system message, try different approaches:
 - Professional Tone: "Analyze this workout data as a certified fitness trainer"
 - Supportive Tone: "Provide feedback as an encouraging personal coach"
@@ -258,7 +258,7 @@ Ask for:
 - Specific metrics analysis
 - Comparative benchmarks
 
-1. **play with the parameters**
+4. **play with the parameters**
 - **Temperature**: Controls randomness/creativity in responses, Lower values = more deterministic
 - **Top_p** (Nucleus Sampling): Controls diversity of responses, Lower values = more focused
 - **Max Tokens**: Maximum length of response
